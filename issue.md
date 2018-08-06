@@ -8,7 +8,7 @@ On the current Unity 0.4 version, there are two ways of implementing self-play:
 
 ### One 
 
-- Following the example of the Tennis sample environment: 
+Following the example of the Tennis sample environment: 
 - Create two or more identical agents.
 - Link each agent to the same brain.
 - Start training.
