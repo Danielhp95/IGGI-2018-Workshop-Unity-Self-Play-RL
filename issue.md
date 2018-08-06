@@ -32,7 +32,7 @@ We would like to implement a self-play system inspired by that introduced in [Em
 
 This is done by introducing two hyper parameters:
 
-- **Delta** ![delta](http://latex.codecogs.com/gif.latex?%5Chuge%20%5Cdelta): which takes values between [0,1]. It indicates how much of the policy history will be considered when sampling a new opponent. ![delta](http://latex.codecogs.com/gif.latex?%5Chuge%20%5Cdelta)= 1, only the latest policy will be used, 𝛿= 0, all of the history will be considered.      
+- **Delta(𝛿)**: which takes values between [0,1]. It indicates how much of the policy history will be considered when sampling a new opponent. 𝛿 = 1, only the latest policy will be used, 𝛿= 0, all of the history will be considered.      
 
 - **Opponent policy change interval**: positive number. how many episodes will be played out before a new opponent will be sampled. 
 
@@ -41,24 +41,23 @@ A graphical representation of the training process can be found below:
 ![self-play-graph](https://github.com/Danielhp95/IGGI-2018-Workshop-Unity-Self-Play-RL/blob/master/images/self-play-graph.png)  
 
 **Benefits:**
-- Agent trains against a varied set of opponents. Avoiding overfitting to its own strategy and becoming more resilient to different strategies. We hypothesize that this will prevent overfitting to a single playstyle, making an AI that can more easily adapt to different players.
+- Agent trains against a varied set of opponents. Avoiding overfitting to its own strategy and becoming more resilient to different strategies and levels of play. We hypothesize that this will prevent overfitting to a single playstyle, making an AI that can more easily adapt to different players.
 - It becomes easy to monitor if the latest version of the agent can defeat previous (and random) versions of itself. If the training only consists of matches between the latest version of the algorithm and itself, we are not monitoring performance against other possible opponents. Meaning that an increase in overall model performance may be due to overfitting against the agent’s latest strategy.
 
 
 ### Code contribution
 We have a few proposed solutions for the architecture for self-play, two of which involve creating a new brain type. The reason the brain needs to be modified is because we need a way of distinguishing between brains which sample from the history of the policy and represent opponents to the learning brain. The advantage of introducing new brain types as we see it is that it might make things nicer in the unity UI when just adding a brain and having it be of the self-play type.
 
-- **Introduce new brain type CoreBrainInternalSelfPlay**: This would introduce a new brain type which is loosely based on the existing CoreBrainInternal, and samples from many pre-saved models. In theory this should keep more of the work in c#, since the randomised sampling can all be done in c# and we shouldn need minimal changes to the python code.
+- **Introduce new brain type CoreBrainInternalSelfPlay**: This would introduce a new brain type which is loosely based on the existing CoreBrainInternal, and samples from many pre-saved models. In theory this should keep more of the work in `C#`, since the randomised sampling can all be done in `C#` and we shouldn need minimal changes to the python code. This approach would feature an external agent that learns in the python side, and one or more `CoreBrainInternalSelfPlay` agents that use TensorFlowSharp to dynamically load checkpoint models created by the external agent as training progresses. Both hyperparameters would be kept as part of the new brain type's class fields.
 
-- **Introduce new brain type CoreBrainExternalSelfPlay**: This would introduce a new brain type which is instead based on the existing CoreBrainExternal. This would therefore require some more significant changes to the python code to allow for the external brain to load a randomly sampled historical policy. We think the jumping off point for these changes would be in the `start_learning` method in the `trainer_controller.py` class.
+- **Introduce new brain type CoreBrainExternalSelfPlay**: This would introduce a new brain type which is instead based on the existing CoreBrainExternal. This would therefore require some more significant changes to the python code to allow for the external brain to load a randomly sampled historical policy. We think the jumping off point for these changes would be in the `start_learning` method in the `trainer_controller.py` class. This method already features a check for episode termination which propagates to the various trainers which we could use to trigger policy resampling. Both hyperparameters would be stored in the python-side hyperparameter file `trainer_config.yaml`.
 
 - **Modify Current CoreBrainExternal or CoreBrainInternal**: This wouldn't introduce a new brain-type, so may be nicer in terms of retaining the simplicity of having 4, clearly defined brain types, but would necessitate some additional parameters to the existing brains, which could be fine with sensible defaults but might make the CoreBrains slightly more confusing to use. It would require similar code to be added to either of the CoreBrain classes as the previous two solutions add to subclasses.
 
-I think our preference would be to create the new, specialised class but we would greatly appreciate some direction on what you guys prefer, and if you think that one of these solutions is more appropriate.
+Our preference would be to create one of the new, specialised Brain type, either internal or external. However, we would greatly appreciate some direction on what you guys prefer, and if you think that one of these solutions is more appropriate. There may also be a better solution that we have not considered.
 
-
-#### Introudcing hyper parameters in code
 
 ### Request for advice / feedback:
+
 - How and where to store whether or not the environment should use self-play. E.g. should the brain know, and track its agents separately (in both or either c# and python), should the academy know, and have separate brains for the ‘main policy’ and past policies. Should it be handled entirely in python?
 - How and where to store variables about the self-play config (e.g. 𝛿) should it be stored `trainer_config.yaml`?
