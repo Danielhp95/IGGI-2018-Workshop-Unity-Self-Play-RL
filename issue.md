@@ -28,7 +28,7 @@ Early in training one agent eventually becomes dominant and overpowers the other
 
 ### Theoretical approach
 
-We would like to implement a self-play system inspired by that introduced in [Emergent Complexity via Multi-Agent Competition](https://arxiv.org/abs/1710.03748). The overall idea is to keep track of the latest iteration of a policy alongside with checkpoints from training history (how many checkpoints should be kept is subject to hyperparameters). Every fixed interval the latest policy is matched against itself or a previous checkpoint. This previous checkpoint is sampled uniformly at random from eligible versions.
+We would like to implement a self-play system inspired by that introduced in [Emergent Complexity via Multi-Agent Competition](https://arxiv.org/abs/1710.03748). The overall idea is to keep track of the latest iteration of a policy alongside with checkpoints from training history. Every fixed interval the latest policy is matched against itself or a previous checkpoint. This previous checkpoint is sampled uniformly at random from eligible versions. This approach works not only for 1v1 scenarios, but also for scenarios with many agents in play. One of the agents would be the one training and learning over time. The rest would use policies sampled from previous historical checkpoints.
 
 This is done by introducing two hyper parameters:
 
