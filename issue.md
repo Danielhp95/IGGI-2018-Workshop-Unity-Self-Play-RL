@@ -41,11 +41,15 @@ A graphical representation of the training process can be found below:
 ![self-play-graph](https://github.com/Danielhp95/IGGI-2018-Workshop-Unity-Self-Play-RL/blob/master/images/self-play-graph.png)  
 
 **Benefits:**
+
 - Agent trains against a varied set of opponents. Avoiding overfitting to its own strategy and becoming more resilient to different strategies and levels of play. We hypothesize that this will prevent overfitting to a single playstyle, making an AI that can more easily adapt to different players.
+
 - It becomes easy to monitor if the latest version of the agent can defeat previous (and random) versions of itself. If the training only consists of matches between the latest version of the algorithm and itself, we are not monitoring performance against other possible opponents. Meaning that an increase in overall model performance may be due to overfitting against the agent’s latest strategy.
 
 **Things to Consider:**
-- 
+
+- This self-play mechanism requires a history of policies that are created during training. This has the potential of requiring large amounts of storage. A checkpoint of a tensorflow graph using the default Unity-ML agents settings for two agents takes up roughly 2MB of storage. This means that a history of 1000 policies will need 2GB, which may be inconvenient for some users.
+
 - With the above storage consideration in mind, if we store a set number of historical policies, say `n`, then there will be an issue that our value of `𝛿` will only matter up until we have stored `n` policies, after which the sample will only come from some proportion the last `n` policies. This will lead to a shifting window of historical policies, rather than a window which scales as time goes on. To avoid this we will have to start pruning policies more intelligently and having a more sparse policy history as time goes on. However we don't currently know how to achieve this.
 
 ### Code contribution
