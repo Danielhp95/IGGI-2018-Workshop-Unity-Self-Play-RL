@@ -46,6 +46,15 @@ A graphical representation of the training process can be found below:
 
 
 ### Code contribution
+We have a few proposed solutions for the architecture for self-play, two of which involve creating a new brain type. The reason the brain needs to be modified is because we need a way of distinguishing between brains which sample from the history of the policy and represent opponents to the learning brain. The advantage of introducing new brain types as we see it is that it might make things nicer in the unity UI when just adding a brain and having it be of the self-play type.
+
+- **Introduce new brain type CoreBrainInternalSelfPlay**: This would introduce a new brain type which is loosely based on the existing CoreBrainInternal, and samples from many pre-saved models. In theory this should keep more of the work in c#, since the randomised sampling can all be done in c# and we shouldn need minimal changes to the python code.
+
+- **Introduce new brain type CoreBrainExternalSelfPlay**: This would introduce a new brain type which is instead based on the existing CoreBrainExternal. This would therefore require some more significant changes to the python code to allow for the external brain to load a randomly sampled historical policy.
+
+- **Modify Current CoreBrainExternal or CoreBrainInternal**: This wouldn't introduce a new brain-type, so may be nicer in terms of retaining the simplicity of having 4, clearly defined brain types, but would necessitate some additional parameters to the existing brains, which could be fine with sensible defaults but might make the coreBrains slightly more confusing to use. It would require similar code to be added to either of the CoreBrain classes.
+
+I think our preference would be to create the new, specialised class but we would greatly appreciate some direction on what you guys prefer, and if you think that one of these solutions is more appropriate.
 
 ### Request for advice / feedback:
 - How and where to store whether or not the environment should use self-play. E.g. should the brain know, and track its agents separately (in both or either c# and python), should the academy know, and have separate brains for the ‘main policy’ and past policies. Should it be handled entirely in python?
