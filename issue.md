@@ -32,13 +32,13 @@ We would like to implement a self-play system inspired by that introduced in [Em
 
 This is done by introducing two hyper parameters:
 
-- **Delta (𝛿)**: which takes values between [0,1]. It indicates how much of the policy history will be considered when sampling a new opponent. 𝛿= 1, only the latest policy will be used, 𝛿= 0, all of the history will be considered.      
+- **Delta** ![delta](http://latex.codecogs.com/gif.latex?%5Chuge%20%5Cdelta): which takes values between [0,1]. It indicates how much of the policy history will be considered when sampling a new opponent. ![delta](http://latex.codecogs.com/gif.latex?%5Chuge%20%5Cdelta)= 1, only the latest policy will be used, 𝛿= 0, all of the history will be considered.      
 
-- **Opponent policyHH change interval**: positive number. how many episodes will be played out before a new opponent will be sampled. 
+- **Opponent policy change interval**: positive number. how many episodes will be played out before a new opponent will be sampled. 
 
 A graphical representation of the training process can be found below: 
 
-!(training-graph)(URL)  
+![self-play-graph](https://github.com/Danielhp95/IGGI-2018-Workshop-Unity-Self-Play-RL/blob/master/images/self-play-graph.png)  
 
 **Benefits:**
 - Agent trains against a varied set of opponents. Avoiding overfitting to its own strategy and becoming more resilient to different strategies. We hypothesize that this will prevent overfitting to a single playstyle, making an AI that can more easily adapt to different players.
@@ -46,6 +46,9 @@ A graphical representation of the training process can be found below:
 
 
 ### Code contribution
+
+
+#### Introudcing hyper parameters in code
 
 ### Request for advice / feedback:
 - How and where to store whether or not the environment should use self-play. E.g. should the brain know, and track its agents separately (in both or either c# and python), should the academy know, and have separate brains for the ‘main policy’ and past policies. Should it be handled entirely in python?
